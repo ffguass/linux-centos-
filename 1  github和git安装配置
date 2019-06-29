@@ -1,0 +1,101 @@
+能看到我的git笔记，应该是已经有了账户，其他平台的没有的自己注册个哈
+一 http://git-scm.com/download/ 下载地址，记得选择系统
+
+二 找到安装包或者安装程序安装
+	windows得自己下一步安装
+	（centos6即以上版本yum有git，可以直接装   yum install -y git 下面安装过程就跳过了）
+	（ubuntu也是命令行直接装  sudo apt-get install git 下面安装过程就跳过了）
+	
+三 安装过程（true of false缺省）(个人的选择)
+	Step 1 Information 		next就行
+	Step 2 Select Destination Location 选择安装位置（默认完事了，或者自己定）
+	Step 3 Select Components 选择组件
+		Additional icons 附加图标
+		​ On the Desktop 在桌面上
+		(true)
+		Windows Explorer integration Windows 在windows鼠标右键菜单添加以下2个选项
+		​ Git Bash Here
+		​ Git GUI Here
+		(true)
+		Git LFS (Large File Support) 大文件支持
+		(true)
+		Associate .git* configuration files with the default text editor
+		将 .git 配置文件与默认文本编辑器相关联
+		(true)
+		Associate .sh files to be run with Bash
+		将.sh文件关联到Bash运行
+		(true)
+		Use a TrueType font in all console windows
+		在所有windows控制台窗口中使用TrueType字体
+		
+		Check daily for Git for Windows updates
+		每天检查Git是否有Windows更新
+	Step 4 Select Start Menu Folder 创建开始菜单目录文件 默认就行或者下面有Don't create
+	Step 5 Choosing the default editor used by Git 选择 Git 使用的默认编辑器
+		Use the Nano editor by default
+		默认使用 Nano 编辑器
+		
+		Use Vim (The ubiquitous text editor) as Git's default editor
+		使用 Vim 作为 Git 的默认编辑器
+		
+		Use Notepad++ as Git's default editor
+		使用 Notepad++ 作为 Git 的默认编辑器
+		(true)(我自己有notepad++，看你自己的情况选)
+		Use Visual Studio Code as Git's default editor
+		使用 Visual Studio Code 作为 Git 的默认编辑器
+		
+	Step 6 Adjusting your PATH environment 配置 PATH 路径
+		默认选第一个Use Git from Git Bash only（2可以让cmd使用git，3覆盖windows工具，不了解的别选）
+	Step 7 Choosing HTTPS transport backend 选择HTTPS连接传输的后端
+		当然是SSL了，git的配置用ssh连接
+	Step 8 Configuring the line ending conversions 行结束是用啥需要转换么，默认就好
+	Step 9 Configuring the terminal emulator to use with Git Bash git终端用啥MinTTY还是windows默认cmd,默认就好
+		Use MinTTY (the default terminal of MSYS2)
+
+		Git Bash will use MinTTY as terminal emulator,which sports a resizable window,
+		non-rectangular selections and a Unicode font. 
+		Windows console programs (such as interactive Python) must be launched via 'winpty' to work in MinTTY.
+
+		Git Bash将使用MinTTY作为终端模拟器，该模拟器具有可调整大小的窗口，非矩形选区和Unicode字体。
+		Windows控制台程序（如交互式Python）必须通过'winpty'启动才能在MinTTY中运行。
+
+		Use Windows' default console window
+
+		Git will use the default console window of Windows ("cmd.exe"),
+		which works well with Win32 console programs such as interactive Python or node.js ,but has a very limited default scroll-back,
+		needs to be configured to use aUnicode font in order to display non-ASCII characters correctly,
+		and prior to Windows 10 its windows was not freely resizable and it only allowed rectangular text selections.
+
+		Git将使用Windows的默认控制台窗口（“cmd.exe”），该窗口可以与Win32控制台程序（如交互式Python或node.js）一起使用，
+		但默认的scroll-back非常有限，需要配置为使用unicode 字体以正确显示非ASCII字符，并且在Windows 10之前，
+		其窗口不能自由调整大小，并且只允许矩形文本选择。
+		
+	Step 10 Configuring extra options 其他配置设置
+		默认就好
+	
+	next，然后就install
+		
+四 git配置（一个人用就跳过Step2，4）
+	Step 1 打开git，在本地生成公钥
+		ssh-keygen -t rsa -C "xx@qq.com(自己邮箱qq、163、gmail啥的，记得是github账户得邮箱)" （后面可选，配置默认的公钥的保存地址，)-f ~/.ssh/demo_rsa
+		(~ 就是当前用户 linux的知识,地址c:\Users\Administrator\.ssh文件夹下的demo_rsa）
+		Enter passphrase (empty for no passphrase): //这里会让你输入密码每次提交会输入密码，自己用可不填，安全的话还是要的
+		下面一路enter
+	Step 2 在.ssh文件夹下创建conf文件
+		# blog
+		Host blog //此处名字可以随意填写只要方便识别即可
+    		HostName github.com
+    		user git //github默认用户git
+    		IdentityFile ~/.ssh/blog_rsa //需要与上面名字相呼应
+Step 3 在github添加公钥
+头像下面的settings里的ssh and gpg key
+点new ssh key
+将路径下的/.ssh/id_rsa.pub复制内容到框框里
+Step 4 在git上添加公钥
+ssh-add -l //可以查询所有添加的公钥
+ssh-add -D //delete添加的公钥
+ssh-add ~/.ssh/demo_rsa // 添加公钥
+//如果报Could not open a connection to your authentication agent.可执行 ssh-agent bash
+Step 5 测试连接
+ssh -T git@github.com
+github公钥变成绿色就ok了
