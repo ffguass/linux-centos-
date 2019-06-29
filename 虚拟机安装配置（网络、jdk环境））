@@ -1,0 +1,57 @@
+一、自己先下好linux镜像。
+二、VMware安装linux，自己找中文破解版哈。
+三、创建虚拟机
+  step1 创建虚拟机，记得选自定义安装，选安装来源的时候选择稍后安装操作系统，操作系统看你装啥，我是centos7 64和ubuntu，
+        虚拟机名称自己起或者默认，一路下一步就好；
+        磁盘大小，大点好，100GB以上吧，不然几个10G的数据下去，虚拟机没空间了得挂载主机的空间，比较麻烦。
+  step2 创建完成，点虚拟机设置；选择CD，找自己下的镜像；网络适配器选NAT模式，点开高级。
+  step3 点开编辑菜单，选虚拟网络编辑器，
+      记住NAT模式你的子网ip（一共4段，记住前面三段就行，最后一段自己编，但是有范围的在DHCP设置里面起始地址和结束地址）和掩码，点开NAT设置，记住网关。
+四、开启虚拟机，安装，内存自己设置的时候记得不要过小，centos默认给1G，ubuntu默认2G，没事，过小不给开图形安装界面，命令行安装你想试试就试试
+  我以centos7 （我也装了ubuntu18.04，主要乌班图界面好看，不过多赘述了） 为例
+  centos：开启虚拟机后，等它出来界面，选择语言：英文（us或者uk都行）（其他语言懂就好，一般英语就行），
+          keyboard键盘就默认选us吧，datetime zone 时区，国内就东八区上海Shanghai，
+          software selection选择minimal install或者装Gui的也行（mini没有图形化界面，GUI就是图形界面）
+          installation destination 下面记得选I will configure partitioning,点done进行磁盘分区，
+            点+号，添加/ /boot swap三个分区，/boot和swap默认大小centos7是500MB，
+            swap大点我放到2048MB了，记住/和/boot的Devicetype选standard、filesystem选ext4，
+            然后点done，点accept changes
+          network & hostname 里面设置一下你的虚拟机的名字
+          就点begin install，开始安装
+          安装过程中可以设置root（超级管理员权限）的密码和登陆的账户和密码
+          5-10分钟差不多好了，就点reboot重启
+五、ip设置
+1、centos的ip设置命令 
+进入文件夹 cd /etc/sysconfig/network-scripts/
+查看当前文件夹的文件 ls
+网卡名应该是ifcfg-eth0或者ens数字，自己vi ifcfg-网卡名就行，vi的操作不会的去看看baidu啥的
+  接下来改ONBOOT=yes BOOTPROTO=static 
+  添加IPADDR=(前三段数字就是虚拟网络编辑器的ip，第四段自己编，不要超过范围) NETMASK（子网掩码固定的） 255.255.255.0 
+    GATEWAY=（就是虚拟网络编辑器的网关）
+  保存退出
+重启或者systemctl restart NetworkManager
+查看ip是否变了，命令 ip a
+2、
+jdk可以直接安装openjdk 
+命令 yum install -y java-1.8.0-openjdk
+也可以通过windos下好，共享文件给虚拟机（虚拟机需要安装VMware Tools）
+3、
+安装VMware Tools：先打开虚拟机。点上面虚拟机的菜单，点安装或者重新安装
+  进到虚拟机，创建目录 mkdir -p /mnt/cdrom
+  装载cd-rom到创建的目录 mount -t auto /dev/cdrom /mnt/cdrom
+  查看VMware Tools的文件名 ls /mnt/cdrom
+  将VMwareTools的安装包解压到opt目录下 tar -zxvf /mnt/cdrom/文件名  -C /opt/
+  进入vmware-tools-distrib,这是解压出来的文件夹，执行./vmware-install.pl(出现bash错误就安装 yum install gcc perl kernel headers)
+4、编辑虚拟机设置 -> 选项 -> 共享文件夹，点击总是启用，并添加共享文件夹。
+  vmware-hgfsclient #查看共享文件夹名称
+5、找到并解压jdk，命令 tar -zxvf 文件路径/文件名 -C /opt/
+ 我放opt下，记得路径
+ 配置PATH，命令 vi /etc/profile
+最后一行加入
+export JAVA_HOME=/opt/jdk1.8.0_212
+export JRE_HOME=$JAVA_HOME/jre
+export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/
+:wq 退出保存
+java -version 检查是否安装成功，注意路径不要写错
+            
+
